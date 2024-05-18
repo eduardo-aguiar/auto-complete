@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { DataService } from '../../data/data.service';
-import { TedTalk } from '../../data/data.types';
+import { DataService } from '../data/data.service';
+import { TedTalk } from '../data/data.types';
 
 @Controller('autocomplete')
 export class AutocompleteController {

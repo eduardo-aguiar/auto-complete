@@ -1,19 +1,25 @@
 services:
-  frontend:
+  backend:
     build:
-      context: ./app
+      context: ./backend
       dockerfile: Dockerfile
     volumes:
-      - ./app:/app
+      - ./backend:/app
       - /app/node_modules
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=development
-    command: npm run dev
-  backend:
-    build: ./backend
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     ports:
-      - "4000:4000"
+      - "3001:3000"
     environment:
       - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://backend:3000
