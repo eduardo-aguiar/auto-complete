@@ -28,7 +28,7 @@ describe('AutocompleteService', () => {
   });
 
   describe('loadData', () => {
-    it('should handle file not found error gracefully', () => {
+    it('should handle file not found error ', () => {
       readFileSyncMock.mockImplementationOnce(() => {
         throw new Error("ENOENT: no such file or directory, open 'data.csv'");
       });
@@ -38,7 +38,7 @@ describe('AutocompleteService', () => {
       );
     });
 
-    it('should handle permission denied error gracefully', () => {
+    it('should handle permission denied error ', () => {
       readFileSyncMock.mockImplementationOnce(() => {
         throw new Error("EACCES: permission denied, open 'data.csv'");
       });
@@ -48,7 +48,7 @@ describe('AutocompleteService', () => {
       );
     });
 
-    it('should handle generic read error gracefully', () => {
+    it('should handle generic read error ', () => {
       readFileSyncMock.mockImplementationOnce(() => {
         throw new Error('Error reading file');
       });

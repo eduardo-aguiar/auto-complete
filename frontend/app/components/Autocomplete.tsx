@@ -15,11 +15,11 @@ const Autocomplete: React.FC = () => {
 
   useEffect(() => {
     debouncedFetchSuggestions(query);
-  }, [query, debouncedFetchSuggestions]);
+  }, [query]);
 
   return (
     <div className="max-w-lg mx-auto mt-10 px-4">
-      <h1 className="text-2xl font-bold mb-4">Autocomplete Component</h1>
+      <h1 className="text-center text-2xl font-bold mb-4">Tedtalks Search</h1>
       <div className="relative flex items-center border border-gray-300 rounded-full overflow-hidden">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -41,7 +41,7 @@ const Autocomplete: React.FC = () => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search..."
-          className="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full pl-10 pr-4 py-2 border-none rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         {isLoading && (
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -49,17 +49,21 @@ const Autocomplete: React.FC = () => {
           </div>
         )}
       </div>
-      <ul className="list-none p-0 mt-2 border rounded-md">
-        {suggestions.length > 0 &&
-          suggestions.map((suggestion, index) => (
+      {suggestions.length > 0 && (
+        <ul className="list-none p-0 mt-2 border border-gray-300 rounded-md shadow-md bg-white">
+          {suggestions.map((suggestion, index) => (
             <li
               key={index}
-              className="p-2 border-b last:border-0 hover:bg-gray-100"
+              className="p-2 border-b last:border-0 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
             >
-              {suggestion.title} - {suggestion.author}
+              <div className="text-gray-800 font-semibold">
+                {suggestion.title}
+              </div>
+              <div className="text-gray-600 text-sm">{suggestion.author}</div>
             </li>
           ))}
-      </ul>
+        </ul>
+      )}
     </div>
   );
 };
