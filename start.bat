@@ -1,3 +1,3 @@
 @echo off
-npx concurrently "npm --prefix ./fronted run dev" "npm --prefix ./backend run start:dev"
+npx concurrently "npm --prefix ./frontend run dev" "npm --prefix ./backend run start:dev"
 pause
