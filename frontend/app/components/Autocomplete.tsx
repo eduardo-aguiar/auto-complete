@@ -1,36 +1,21 @@
+"use client";
 import React, { useState, useEffect, useCallback } from "react";
-import { debounce } from "../utils/debounce";
+import { TedTalk } from "./autocompleteTypes";
+import { fetchSuggestions } from "./autocompleteHelper";
 
 const Autocomplete: React.FC = () => {
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [suggestions, setSuggestions] = useState<TedTalk[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  const fetchSuggestions = useCallback(
-    debounce((query: string) => {
-      if (query.length > 0) {
-        setIsLoading(true);
-        fetch(`${API_URL}/autocomplete?q=${query}&limit=10`)
-          .then((response) => response.json())
-          .then((data) => {
-            setSuggestions(data);
-            setIsLoading(false);
-          })
-          .catch((err) => {
-            console.error(err);
-            setIsLoading(false);
-          });
-      } else {
-        setSuggestions([]);
-      }
-    }, 300),
-    [API_URL]
+  const debouncedFetchSuggestions = useCallback(
+    (query: string) => fetchSuggestions(query, setSuggestions, setIsLoading),
+    []
   );
 
   useEffect(() => {
-    fetchSuggestions(query);
-  }, [query, fetchSuggestions]);
+    debouncedFetchSuggestions(query);
+  }, [query, debouncedFetchSuggestions]);
 
   return (
     <div className="max-w-lg mx-auto mt-10 px-4">
@@ -65,14 +50,15 @@ const Autocomplete: React.FC = () => {
         )}
       </div>
       <ul className="list-none p-0 mt-2 border rounded-md">
-        {suggestions.map((suggestion, index) => (
-          <li
-            key={index}
-            className="p-2 border-b last:border-0 hover:bg-gray-100"
-          >
-            {suggestion.title} - {suggestion.author}
-          </li>
-        ))}
+        {suggestions.length > 0 &&
+          suggestions.map((suggestion, index) => (
+            <li
+              key={index}
+              className="p-2 border-b last:border-0 hover:bg-gray-100"
+            >
+              {suggestion.title} - {suggestion.author}
+            </li>
+          ))}
       </ul>
     </div>
   );

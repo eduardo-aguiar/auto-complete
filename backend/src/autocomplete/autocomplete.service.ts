@@ -6,8 +6,6 @@ import {
   Optional,
 } from '@nestjs/common';
 import { TedTalk } from '../data/data.types';
-import { readFileSync } from 'fs';
-import { join } from 'path';
 
 @Injectable()
 export class AutocompleteService {
@@ -56,8 +54,8 @@ export class AutocompleteService {
     const lowercaseQuery = query.toLowerCase();
     const filtered = this.tedTalks.filter(
       (talk) =>
-        talk.title.toLowerCase().includes(lowercaseQuery) ||
-        talk.author.toLowerCase().includes(lowercaseQuery),
+        talk.title?.toLowerCase().includes(lowercaseQuery) ||
+        talk.author?.toLowerCase().includes(lowercaseQuery),
     );
 
     return filtered.slice(0, limit);
