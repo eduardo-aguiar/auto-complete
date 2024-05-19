@@ -1,3 +1,4 @@
+import { LoggerService } from '@nestjs/common';
 import { TedTalk } from '../data/data.types';
 
 export const mockTedTalkData: string = [
@@ -25,3 +26,11 @@ export const expectedSuggestions: TedTalk[] = [
     link: 'link2',
   },
 ];
+
+export class MockLogger implements LoggerService {
+  log(message: string) {}
+  error(message: string, trace: string) {}
+  warn(message: string) {}
+  debug(message: string) {}
+  verbose(message: string) {}
+}
