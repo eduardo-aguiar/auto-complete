@@ -3,23 +3,24 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
+    container_name: backend
     ports:
       - "3000:3000"
+    volumes:
+      - ./backend:/app
     environment:
-      - NODE_ENV=development
+      - DATA_PATH=/app/data/data.csv
+    depends_on:
+      - frontend
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3001:3001"
     volumes:
       - ./frontend:/app
-      - /app/node_modules
-    ports:
-      - "3001:3000"
-    environment:
-      - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://backend:3000
+    env_file:
+      - ./frontend/.env.docker

@@ -1,21 +1,49 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { TedTalk } from "./autocompleteTypes";
 import { fetchSuggestions } from "./autocompleteHelper";
+import { debounce } from "../utils/debounce";
 
 const Autocomplete: React.FC = () => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<TedTalk[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const debouncedFetchSuggestions = useCallback(
-    (query: string) => fetchSuggestions(query, setSuggestions, setIsLoading),
+  const debouncedFetchSuggestions = useMemo(
+    () =>
+      debounce(async (query: string) => {
+        if (query.length === 0) {
+          setSuggestions([]);
+          return;
+        }
+        setIsLoading(true);
+        try {
+          const data = await fetchSuggestions(query);
+          setSuggestions(data);
+        } catch (error) {
+          console.error(error);
+          setError("Failed to fetch suggestions");
+        } finally {
+          setIsLoading(false);
+        }
+      }, 300),
     []
   );
 
+  const handleQueryChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setQuery(e.target.value);
+      debouncedFetchSuggestions(e.target.value);
+    },
+    [debouncedFetchSuggestions]
+  );
+
   useEffect(() => {
-    debouncedFetchSuggestions(query);
-  }, [query, debouncedFetchSuggestions]);
+    return () => {
+      debouncedFetchSuggestions.cancel();
+    };
+  }, [debouncedFetchSuggestions]);
 
   return (
     <div className="max-w-lg mx-auto mt-10 px-4">
@@ -40,7 +68,7 @@ const Autocomplete: React.FC = () => {
         <input
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={handleQueryChange}
           placeholder="Search..."
           className="w-full pl-10 pr-4 py-2 border-none rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           data-testid="search-input"
