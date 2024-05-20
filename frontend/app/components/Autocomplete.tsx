@@ -15,7 +15,7 @@ const Autocomplete: React.FC = () => {
 
   useEffect(() => {
     debouncedFetchSuggestions(query);
-  }, [query]);
+  }, [query, debouncedFetchSuggestions]);
 
   return (
     <div className="max-w-lg mx-auto mt-10 px-4">
@@ -28,6 +28,7 @@ const Autocomplete: React.FC = () => {
           strokeWidth={1.5}
           stroke="currentColor"
           className="w-5 h-5 text-gray-400 absolute left-3"
+          data-testid="search-icon"
         >
           <path
             strokeLinecap="round"
@@ -42,19 +43,27 @@ const Autocomplete: React.FC = () => {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search..."
           className="w-full pl-10 pr-4 py-2 border-none rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          data-testid="search-input"
         />
         {isLoading && (
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+          <div
+            className="absolute right-3 top-1/2 transform -translate-y-1/2"
+            data-testid="loading-spinner"
+          >
             <div className="loader"></div>
           </div>
         )}
       </div>
       {suggestions.length > 0 && (
-        <ul className="list-none p-0 mt-2 border border-gray-300 rounded-md shadow-md bg-white">
+        <ul
+          className="list-none p-0 mt-2 border border-gray-300 rounded-md shadow-md bg-white"
+          data-testid="suggestions-list"
+        >
           {suggestions.map((suggestion, index) => (
             <li
               key={index}
               className="p-2 border-b last:border-0 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
+              data-testid={`suggestion-${index}`}
             >
               <div className="text-gray-800 font-semibold">
                 {suggestion.title}
